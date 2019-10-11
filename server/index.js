@@ -1,7 +1,17 @@
-const express = require('express')
+require('dotenv').config();
+const express = require('express');
+const massive = require('massive');
 
-const app = express()
+const app = express();
+app.use(express.json());
 
-app.use(express.json())
 
-app.listen(3030, console.log('Running on Port: 3030'))
+const {SERVER_PORT, CONNECTION_STRING} = process.env
+
+massive(CONNECTION_STRING)
+    .then(db => {
+        app.set('db', db)
+    })
+    .catch(err => console.log(err))
+
+app.listen(SERVER_PORT, console.log(`Server is running on ${SERVER_PORT}`))
